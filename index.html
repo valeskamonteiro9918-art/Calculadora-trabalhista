@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Calculadora de Verbas Trabalhistas | Valeska Monteiro</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{--bg:#f3ece0;--card:#faf6ee;--ink:#2a1a20;--mute:#7a6a6e;--wine:#7d1f3d;--wine2:#5f1730;--gold:#a8843f;--tint:#efe3c8;--line:#e3d6c0;--ok:#2f7a4f;--neg:#a33a3a;--accent:#7d1f3d;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1d1115;--card:#2a1a20;--ink:#f3ece0;--mute:#b9a6ae;--tint:#3a2a24;--line:#43303a;--ok:#6fcf97;--neg:#ef8d8d;--accent:#e08aa3;--gold:#d9bd7e;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1d1115;--card:#2a1a20;--ink:#f3ece0;--mute:#b9a6ae;--tint:#3a2a24;--line:#43303a;--ok:#6fcf97;--neg:#ef8d8d;--accent:#e08aa3;--gold:#d9bd7e;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;line-height:1.5}
+.hero{background:linear-gradient(var(--wine),var(--wine2));color:#f6efe2;text-align:center;padding:34px 18px 38px}
+.kicker{color:#d9bd7e;letter-spacing:.2em;font-size:11px;font-weight:600;margin:0 0 8px}
+h1{font-family:'Playfair Display',serif;font-size:31px;line-height:1.1;margin:0 auto 10px;max-width:640px}
+.hero p{margin:4px auto;max-width:560px;font-size:14px;opacity:.92}
+.wrap{max-width:1040px;margin:0 auto;padding:16px 16px 100px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;margin-bottom:12px}
+.chip{border:1px solid var(--wine);background:transparent;color:var(--accent);border-radius:999px;padding:6px 12px;font:inherit;font-size:12px;cursor:pointer}
+.chip.s{cursor:default;color:var(--mute);border-color:var(--line)}
+.chip.wine{font-weight:600}
+.intro{font-size:14px;color:var(--mute);margin:0 0 16px}
+.layout{display:grid;grid-template-columns:1fr 330px;gap:20px;align-items:start}
+@media(max-width:860px){.layout{grid-template-columns:1fr}}
+details.card{background:var(--card);border:1px solid var(--line);border-radius:10px;margin-bottom:16px}
+summary{list-style:none;cursor:pointer;padding:16px 20px;display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--accent)}
+summary::-webkit-details-marker{display:none}
+summary small{font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:var(--mute)}
+summary:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.body{padding:2px 20px 22px;border-top:1px solid var(--gold)}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:18px 20px;margin-top:14px}
+@media(max-width:560px){.fg{grid-template-columns:1fr}}
+.full{grid-column:1/-1}
+.l{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;color:var(--mute)}
+.f input,.f select{width:100%;border:0;border-bottom:1.5px solid var(--line);background:transparent;color:var(--ink);font:inherit;font-size:16px;padding:8px 0;border-radius:0}
+.f input:focus,.f select:focus{border-bottom-color:var(--wine);outline:none}
+.f input:focus-visible,.f select:focus-visible{outline:none;border-bottom-color:var(--accent)}
+.f textarea{width:100%;min-height:120px;border:1.5px solid var(--line);border-radius:8px;background:transparent;color:var(--ink);font:inherit;font-size:15px;padding:10px 12px;resize:vertical;margin-top:6px}.f textarea:focus{outline:none;border-color:var(--wine)}
+.help{font-size:12.5px;color:var(--mute);margin:4px 0 0}
+.q{font-weight:600;font-size:15px;margin:20px 0 4px}
+.opts{display:grid;gap:8px;margin-top:8px}
+.opt{position:relative;display:block;cursor:pointer}
+.opt input{position:absolute;opacity:0;inset:0;width:100%;height:100%;cursor:pointer;margin:0}
+.box{display:block;border:1.5px solid var(--line);border-radius:10px;padding:11px 14px;background:transparent}
+.box b{display:block;font-size:15px}.box span{font-size:12.5px;color:var(--mute)}
+.opt input:checked+.box{border-color:var(--wine);background:var(--tint)}
+.opt input:focus-visible+.box{outline:2px solid var(--gold);outline-offset:2px}
+.row{display:grid;grid-template-columns:1fr 120px 28px;gap:10px;align-items:end;margin-top:10px}
+.row button{border:0;background:none;color:var(--mute);font-size:18px;cursor:pointer}
+.add{border:0;background:none;color:var(--accent);font:inherit;font-weight:600;font-size:13px;cursor:pointer;margin-top:10px;padding:0}
+.sum{position:sticky;top:16px;min-width:0;overflow:hidden;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px}
+.sum h3{margin:0 0 10px;font-size:11px;letter-spacing:.14em;color:var(--mute)}
+.tot{border:1.5px solid var(--gold);background:var(--tint);border-radius:8px;padding:14px;text-align:center}
+.tot .v{font-family:'Playfair Display',serif;font-size:30px;font-weight:700;color:var(--accent);line-height:1.1}
+.tot .k{font-size:10.5px;letter-spacing:.12em;color:var(--mute)}
+.mini{display:flex;gap:12px;justify-content:space-between;font-size:13.5px;padding:8px 2px;border-bottom:1px solid var(--line)}
+.hint{font-size:13px;color:var(--mute);margin:12px 0 0}
+.sum table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:6px}
+.sum td{padding:5px 2px;border-bottom:1px solid var(--line);vertical-align:top}
+.sum td:last-child{text-align:right;white-space:nowrap}
+.sum tr.p td:last-child{color:var(--ok)}.sum tr.d td:last-child{color:var(--neg)}
+.sum td:first-child{overflow-wrap:anywhere}.sum td.nt{white-space:normal;text-align:left;color:var(--mute);font-size:12px;line-height:1.4;padding-top:10px}.mini b{white-space:nowrap}
+.sum summary{font:600 13px 'Inter',sans-serif;padding:10px 0;color:var(--accent)}
+.b{display:block;width:100%;border-radius:8px;padding:12px;font:inherit;font-weight:600;font-size:14px;cursor:pointer;margin-top:8px;text-align:center}
+.b.w{background:var(--wine);color:#fff;border:1.5px solid var(--wine)}
+.b.o{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.b.ow{background:transparent;color:var(--accent);border:1.5px solid var(--wine)}
+.b:disabled{opacity:.45;cursor:not-allowed}
+.note{font-size:11.5px;color:var(--mute);margin:12px 0 0}
+.bar{display:none}
+@media(max-width:860px){.bar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:5;background:var(--wine);color:#fff;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));justify-content:space-between;align-items:center}
+.bar button{background:#f6efe2;color:var(--wine);border:0;border-radius:999px;padding:9px 16px;font:inherit;font-weight:600;font-size:13px}.bar b{font-family:'Playfair Display',serif;font-size:22px}.bar small{display:block;font-size:10.5px;opacity:.8}
+.sum{position:static}}
+#toast{position:fixed;left:50%;bottom:calc(80px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:9}
+#toast.on{opacity:1}
+.hide{display:none!important}
+</style>
+</head>
+<body>
+<div class="hero">
+<p class="kicker">APURAÇÃO DE VERBAS</p>
+<h1>Calculadora de Verbas Trabalhistas e Indenizações</h1>
+
+
+</div>
+<div class="wrap">
+<div class="chips">
+<span class="chip s" id="saved">Salvo automaticamente neste aparelho</span>
+<button class="chip" id="bJson">Baixar dados (.json)</button>
+<button class="chip" id="bOpen">Abrir dados (.json)</button>
+<button class="chip wine" id="bNew">Novo cálculo</button>
+<input type="file" id="fOpen" accept=".json,application/json" class="hide">
+</div>
+<p class="intro">Responda as perguntas abaixo com os dados do seu contrato de trabalho. Valores aproximados já ajudam: o resumo mostra, em tempo real, uma estimativa do que você pode receber, já com os descontos legais. Se não souber alguma informação, deixe em branco e continue.</p>
+<div class="layout"><main>
+
+<details class="card" open><summary>1. Quem é você <small id="s1"></small></summary><div class="body"><div class="fg f">
+<div><label class="l" for="nome">Nome completo</label><input id="nome" autocomplete="name" placeholder="Como está nos seus documentos"></div>
+<div><label class="l" for="idade">Sua idade</label><input id="idade" type="number" min="14" max="99" inputmode="numeric" placeholder="Ex.: 34"></div>
+<div class="full"><label class="l" for="ctps">Carteira de trabalho (PDF), opcional</label><input id="ctps" type="file" accept="application/pdf">
+<p class="help" id="ctpsH">Fotografe ou escaneie a página do contrato e salve em PDF. O arquivo não sai do seu aparelho; depois é só enviá-lo no WhatsApp junto com o resumo.</p></div>
+</div></div></details>
+
+<details class="card" open><summary>2. Seu contrato de trabalho <small id="s2"></small></summary><div class="body"><div class="fg f">
+<div><label class="l" for="adm">Quando você começou a trabalhar</label><input id="adm" type="date"><p class="help">Está na carteira, na página do contrato.</p></div>
+<div><label class="l" for="des">Quando o contrato terminou</label><input id="des" type="date"><p class="help">Último dia de trabalho, ou data da demissão.</p></div>
+<div><label class="l" for="sal">Seu último salário bruto (R$)</label><input id="sal" type="number" step="0.01" min="0" inputmode="decimal" placeholder="0,00"><p class="help">O valor antes dos descontos, como no contracheque.</p></div>
+<div><label class="l" for="venc">Férias que você ainda não tirou</label><select id="venc"><option value="0">Nenhuma, estou com as férias em dia</option><option value="1">1 período (12 meses de trabalho sem tirar)</option><option value="2">2 períodos</option><option value="3">3 períodos ou mais</option></select><p class="help">Cada ano de trabalho dá direito a 30 dias de férias.</p></div>
+<div class="full"><label class="l" for="fgts">Saldo do FGTS (R$), se souber</label><input id="fgts" type="number" step="0.01" min="0" inputmode="decimal" placeholder="Deixe em branco se não souber"><p class="help">Veja no app FGTS. Sem esse valor, estimamos 8% do salário por mês trabalhado.</p></div>
+</div></div></details>
+
+<details class="card" open><summary>3. Como o contrato terminou <small id="s3"></small></summary><div class="body">
+<p class="q">O que aconteceu?</p>
+<div class="opts" id="mot">
+<label class="opt"><input type="radio" name="motivo" value="sjc" checked><span class="box"><b>A empresa me mandou embora</b><span>Dispensa sem justa causa.</span></span></label>
+<label class="opt"><input type="radio" name="motivo" value="ri"><span class="box"><b>A empresa descumpriu o contrato</b><span>Rescisão indireta: salário atrasado, FGTS sem depósito, assédio, ofensas.</span></span></label>
+<label class="opt"><input type="radio" name="motivo" value="ac"><span class="box"><b>Fizemos um acordo</b><span>Eu e a empresa combinamos juntos de encerrar (art. 484-A da CLT).</span></span></label>
+<label class="opt"><input type="radio" name="motivo" value="pd"><span class="box"><b>Eu pedi para sair</b><span>Pedido de demissão.</span></span></label>
+<label class="opt"><input type="radio" name="motivo" value="jc"><span class="box"><b>Fui demitido por justa causa</b><span>A empresa alegou falta grave.</span></span></label>
+</div>
+<div id="avBox"><p class="q" id="avQ">E o aviso prévio?</p>
+<div class="opts">
+<label class="opt"><input type="radio" name="aviso" value="ind" checked><span class="box"><b id="avI"></b><span id="avIs"></span></span></label>
+<label class="opt"><input type="radio" name="aviso" value="trab"><span class="box"><b id="avT"></b><span id="avTs"></span></span></label>
+</div></div>
+<div class="fg f">
+<p class="q full" style="margin:0">Descontos legais</p><p class="help full" style="margin:-10px 0 0">INSS e Imposto de Renda são calculados automaticamente pelas tabelas oficiais. Responda apenas o que se aplica a você.</p><div><label class="l" for="dep">Dependentes no Imposto de Renda</label><input id="dep" type="number" min="0" value="0" inputmode="numeric"><p class="help">Filhos ou cônjuge que você declara. Na dúvida, deixe 0.</p></div>
+<div><label class="l" for="pens">Pensão alimentícia que você paga (%)</label><input id="pens" type="number" step="0.01" min="0" max="100" value="0" inputmode="decimal"><p class="help">Percentual descontado por decisão judicial. Deixe 0 se não paga. Também reduz a base do Imposto de Renda.</p></div>
+<div><label class="l" for="vt">Recebia vale-transporte?</label><select id="vt"><option value="0">Não</option><option value="1">Sim (desconto de até 6% do salário)</option></select><p class="help">A lei permite descontar 6% do salário, proporcional aos dias trabalhados.</p></div>
+<div><label class="l" for="adi13">13º já adiantado (R$)</label><input id="adi13" type="number" step="0.01" min="0" inputmode="decimal" placeholder="0,00"><p class="help">Se já recebeu a 1ª parcela do 13º este ano, informe o valor.</p></div>
+<div><label class="l" for="outd">Outros descontos (R$)</label><input id="outd" type="number" step="0.01" min="0" value="0" inputmode="decimal"><p class="help">Faltas, vales, adiantamentos ou parcela de empréstimo consignado.</p></div>
+</div></div></details>
+
+<details class="card"><summary>4. Indenizações, se houver <small id="s4"></small></summary><div class="body">
+<p class="q">Você sofreu humilhação, assédio ou ofensa no trabalho? (dano moral)</p>
+<div class="opts" id="grau">
+<label class="opt"><input type="radio" name="grau" value="0" checked><span class="box"><b>Não, ou prefiro avaliar depois</b></span></label>
+<label class="opt"><input type="radio" name="grau" value="3"><span class="box"><b>Leve</b><span>Constrangimento pontual.</span></span></label>
+<label class="opt"><input type="radio" name="grau" value="5"><span class="box"><b>Média</b><span>Situações repetidas ou ofensas diretas.</span></span></label>
+<label class="opt"><input type="radio" name="grau" value="20"><span class="box"><b>Grave</b><span>Humilhação frequente, assédio, abalo sério.</span></span></label>
+<label class="opt"><input type="radio" name="grau" value="50"><span class="box"><b>Gravíssima</b><span>Violência, discriminação ou dano permanente.</span></span></label>
+</div>
+<div class="f" id="relBox" style="margin-top:14px"><label class="l" for="relato">Conte exatamente o que você sofreu</label><textarea id="relato" maxlength="2000" placeholder="Ex.: fui xingado na frente dos colegas, em que dias, quem fez, se havia testemunhas..."></textarea><p class="help">Escreva com suas palavras, com datas, nomes e o que aconteceu. Quanto mais detalhe, melhor a análise da advogada.</p></div>
+<div class="f" id="morBox" style="margin-top:14px"><label class="l" for="mor">Valor que você pretende pedir (R$)</label><input id="mor" type="number" step="0.01" min="0" inputmode="decimal" placeholder="Se não souber, deixe em branco"><p class="help">Opcional. É só a sua expectativa: o valor final é definido pelo juiz.</p></div>
+<p class="q">Você teve prejuízos em dinheiro por causa disso? (dano material)</p>
+<p class="help">Ex.: remédios, tratamento, transporte, salário que deixou de ganhar. Escreva o item e o valor.</p>
+<div class="f" id="mats"></div>
+<button class="add" id="addM">+ adicionar item</button>
+</div></details>
+
+</main>
+<aside class="sum" id="sum">
+<h3>RESUMO</h3>
+<div class="tot"><div class="v" id="total">R$ 0,00</div><div class="k">TOTAL ESTIMADO</div></div>
+<div class="mini"><span>Descontos legais (INSS, IR e outros)</span><b id="rD">R$ 0,00</b></div>
+<div class="mini"><span>Verbas rescisórias líquidas</span><b id="rL">R$ 0,00</b></div>
+<div class="mini"><span>Danos morais</span><b id="rM">R$ 0,00</b></div>
+<div class="mini"><span>Danos materiais</span><b id="rT">R$ 0,00</b></div>
+<p class="hint" id="hint">Preencha as etapas 1 e 2 para ver o cálculo.</p>
+<details id="det" class="hide"><summary>Ver detalhes do cálculo</summary><table id="tb"></table></details>
+<button class="b w" id="wa">Enviar no WhatsApp</button>
+<div class="hint hide" id="waBox">O PDF foi baixado: anexe-o na conversa. Se o WhatsApp não abriu, copie a mensagem e envie para <b>(27) 99752-5314</b>.<button class="b ow" id="cpy" style="margin-top:8px">Copiar mensagem</button></div>
+<button class="b ow" id="pdf">Gerar PDF com os valores</button>
+<p class="hint hide" id="dlbox"></p>
+<p class="note">Estimativa informativa, sem valor de cálculo judicial. INSS (tabela progressiva) e IRRF (com dedução por dependente, pensão e redutor de 2026) são calculados automaticamente; aviso e férias indenizados e a multa do FGTS são isentos. Confira as tabelas vigentes. Horas extras, comissões e adicionais não estão incluídos. A análise final é da advogada.</p>
+</aside></div></div>
+<div class="bar"><div><small>TOTAL ESTIMADO</small><b id="barT">R$ 0,00</b></div><button id="goSum">Ver resumo</button></div>
+<div id="toast"></div>
+<script>
+const $=id=>document.getElementById(id);
+const brl=n=>n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const r2=n=>Math.round(n*100)/100;
+const pd=s=>{const[a,b,c]=s.split('-').map(Number);return new Date(a,b-1,c)};
+const fd=d=>d.toLocaleDateString('pt-BR');
+const dim=(y,m)=>new Date(y,m+1,0).getDate();
+const ZAP='5527997525314',IDS=['nome','idade','adm','des','sal','venc','fgts','dep','outd','mor','pens','vt','adi13','relato'];
+let R=null,mats=[{d:'',v:''}],arq='',lastTxt='',pdfCache=null,pdfTimer=null;
+const rad=n=>(document.querySelector('input[name="'+n+'"]:checked')||{}).value;
+
+function inss(b){const t=[[1621,.075],[2902.84,.09],[4354.27,.12],[8475.55,.14]];let p=0,v=0;b=Math.min(b,8475.55);for(const[l,a]of t){if(b>p){v+=(Math.min(b,l)-p)*a;p=l}}return r2(v)}
+function ir(bruto,ins,dep,ex){const b=bruto-ins-dep*189.59-(ex||0);const t=[[2428.80,0,0],[2826.65,.075,182.16],[3751.05,.15,394.16],[4664.68,.225,675.49],[1e12,.275,908.73]];let i=0;for(const[l,a,d]of t){if(b<=l){i=b*a-d;break}}i=Math.max(0,i);if(bruto<=5000)return 0;if(bruto<=7350)i=Math.max(0,i-(978.62-0.133145*bruto));return r2(i)}
+function avos13(a,f){const y=f.getFullYear();let n=0;for(let m=0;m<=f.getMonth();m++){let s=1,e=dim(y,m);if(a.getFullYear()===y){if(m<a.getMonth())continue;if(m===a.getMonth())s=a.getDate()}if(m===f.getMonth())e=f.getDate();if(e-s+1>=15)n++}return n}
+function avosFer(a,f){let an=new Date(f.getFullYear(),a.getMonth(),a.getDate());if(an>f)an.setFullYear(an.getFullYear()-1);if(an<a)an=a;let m=(f.getFullYear()-an.getFullYear())*12+f.getMonth()-an.getMonth();if(new Date(an.getFullYear(),an.getMonth()+m,an.getDate())>f)m--;const base=new Date(an.getFullYear(),an.getMonth()+m,an.getDate());const dias=Math.round((f-base)/864e5)+1;if(dias>=15)m++;return Math.min(12,Math.max(0,m))}
+
+function syncAviso(){
+ const m=rad('motivo'),pdm=m==='pd';
+ $('avBox').classList.toggle('hide',m==='jc');
+ if(pdm){$('avQ').textContent='Você vai cumprir o aviso prévio?';
+  $('avI').textContent='Não vou cumprir';$('avIs').textContent='A empresa pode descontar 1 salário do que você tem a receber.';
+  $('avT').textContent='Vou cumprir (trabalhar até o fim do aviso)';$('avTs').textContent='Nada é descontado.'}
+ else{$('avQ').textContent='E o aviso prévio?';
+  $('avI').textContent='Fui dispensado na hora e a empresa paga o aviso';$('avIs').textContent='Aviso indenizado: você recebe o valor sem precisar trabalhar.';
+  $('avT').textContent='Trabalhei durante o aviso';$('avTs').textContent='O aviso foi cumprido trabalhando; nada a receber por ele.'}
+}
+function compute(){
+ const sal=parseFloat($('sal').value);
+ if(!$('adm').value||!$('des').value||!(sal>0))return{miss:'Preencha as datas e o salário (etapa 2) para ver o cálculo.'};
+ const adm=pd($('adm').value),des=pd($('des').value);
+ if(des<adm)return{miss:'A data em que o contrato terminou precisa ser depois da data de início.'};
+ const mot=rad('motivo'),aviso=rad('aviso'),dep=+$('dep').value||0,venc=+$('venc').value||0,outd=+$('outd').value||0;
+ const L=[];const add=(t,d,v)=>{if(v)L.push({t,d,v:r2(v)})};
+ let anos=des.getFullYear()-adm.getFullYear();if(new Date(des.getFullYear(),adm.getMonth(),adm.getDate())>des)anos--;
+ const avDias=Math.min(90,30+3*Math.max(0,anos));
+ const empresa=['sjc','ri','ac'].includes(mot),ind=aviso==='ind';
+ const proj=(empresa&&ind)?new Date(des.getFullYear(),des.getMonth(),des.getDate()+avDias):des;
+ const dias=Math.min(30,des.getDate());const saldo=sal/30*dias;
+ add(`Saldo de salário (${dias} dias)`,'p',saldo);
+ let avP=0;
+ if(empresa&&ind){avP=sal/30*avDias*(mot==='ac'?.5:1);add(`Aviso prévio indenizado (${avDias} dias${mot==='ac'?', 50%':''})`,'p',avP)}
+ let dec=0;
+ if(mot!=='jc'){const a13=avos13(adm,proj);dec=sal/12*a13;add(`13º proporcional (${a13}/12)`,'p',dec);
+  const af=avosFer(adm,proj);const fp=sal/12*af;add(`Férias proporcionais (${af}/12)`,'p',fp);add('1/3 sobre férias proporcionais','p',fp/3)}
+ if(venc>0){add(`Férias vencidas (${venc} período${venc>1?'s':''})`,'p',sal*venc);add('1/3 sobre férias vencidas','p',sal*venc/3)}
+ const meses=Math.max(1,(des.getFullYear()-adm.getFullYear())*12+des.getMonth()-adm.getMonth()+1);
+ const saldoF=$('fgts').value!==''?parseFloat($('fgts').value):sal*.08*meses;
+ const fgtsRes=.08*(saldo+avP+dec);
+ let multa=0;if(mot==='sjc'||mot==='ri')multa=.4*(saldoF+fgtsRes);if(mot==='ac')multa=.2*(saldoF+fgtsRes);
+ add(`Multa do FGTS (${mot==='ac'?20:40}%)`,'p',multa);
+ const pensP=(+$('pens').value||0)/100;const iN=inss(saldo);const pensS=r2(pensP*(saldo-iN));const bS=Math.max(0,saldo-iN-dep*189.59-pensS);add(`INSS sobre saldo de salário (base ${brl(saldo)})`,'d',iN);add(`IRRF sobre saldo de salário (base ${brl(bS)})`,'d',ir(saldo,iN,dep,pensS));
+ let pensT=pensS;if(dec){const i13=inss(dec),p13=r2(pensP*(dec-i13)),b13=Math.max(0,dec-i13-dep*189.59-p13);add(`INSS sobre 13º (base ${brl(dec)})`,'d',i13);add(`IRRF sobre 13º (base ${brl(b13)})`,'d',ir(dec,i13,dep,p13));pensT+=p13}
+ add(`Pensão alimentícia (${(pensP*100).toLocaleString('pt-BR')}%)`,'d',pensT);
+ if($('vt').value==='1')add('Vale-transporte (6% do salário)','d',sal*.06*dias/30);
+ add('Adiantamento de 13º já recebido','d',+$('adi13').value||0);
+ if(mot==='pd'&&ind)add('Desconto de aviso prévio não cumprido','d',sal);
+ add('Outros descontos','d',outd);
+ let prov=0,desc=0;L.forEach(l=>l.d==='p'?prov+=l.v:desc+=l.v);
+ const liquido=r2(prov-desc),mult=+rad('grau')||0;
+ const moral=mult>0&&$('mor').value!==''?parseFloat($('mor').value)||0:0;
+ const mat=mats.reduce((s,m)=>s+(parseFloat(m.v)||0),0);
+ const mLabel={sjc:'Dispensa sem justa causa',ri:'Rescisão indireta',pd:'Pedido de demissão',ac:'Acordo (art. 484-A CLT)',jc:'Dispensa por justa causa'}[mot];
+ return{nome:$('nome').value.trim(),dmDef:mult>0&&!moral,relato:mult>0?$('relato').value.trim():'',idade:$('idade').value,adm,des,sal,mLabel,aviso:mot==='jc'?'Não se aplica':(ind?'Indenizado':'Trabalhado'),avDias,anos,L,fgtsRes:r2(fgtsRes),liquido,desc:r2(desc),moral:r2(moral),mat:r2(mat),matItems:mats.filter(m=>parseFloat(m.v)>0),total:r2(liquido+moral+mat),arq}
+}
+function renderMats(){
+ $('mats').innerHTML=mats.map((m,i)=>`<div class="row"><div><label class="l">Item</label><input data-i="${i}" data-k="d" value="${(m.d||'').replace(/"/g,'&quot;')}" placeholder="Ex.: remédios, transporte"></div><div><label class="l">Valor (R$)</label><input data-i="${i}" data-k="v" type="number" step="0.01" min="0" inputmode="decimal" value="${m.v}" placeholder="0,00"></div><button data-x="${i}" aria-label="Remover item">×</button></div>`).join('');
+}
+function update(){
+ const sal=parseFloat($('sal').value)||0;
+ 
+ $('morBox').classList.toggle('hide',!(+rad('grau')));$('relBox').classList.toggle('hide',!(+rad('grau')));
+ R=compute();
+ const ok=!R.miss,show=ok?R:{liquido:0,moral:0,mat:0,total:0};
+ $('total').textContent=$('barT').textContent=brl(show.total);$('rL').textContent=brl(show.liquido);$('rD').textContent=show.desc?'- '+brl(show.desc):brl(0);$('rM').textContent=show.dmDef?'A definir':brl(show.moral);$('rT').textContent=brl(show.mat);
+ 
+ $('det').classList.toggle('hide',!ok);
+ $('hint').textContent=ok?'Valores calculados. Use os botões abaixo para copiar, enviar ou gerar o PDF.':R.miss;
+ $('s1').textContent=$('nome').value.trim()&&$('idade').value?'✓ completo':'';
+ $('s2').textContent=ok?`✓ ${R.anos} ano(s) de casa`:'';
+ $('s3').textContent=ok?'✓ '+R.mLabel:'';
+ $('s4').textContent=ok&&(R.moral||R.mat)?'✓ '+brl(R.moral+R.mat):'';
+ if(ok){let h='';R.L.forEach(l=>h+=`<tr class="${l.d}"><td>${l.t}</td><td>${l.d==='d'?'- ':''}${brl(l.v)}</td></tr>`);h+='<tr><td colspan="2" class="nt">Isentos de INSS e IR: aviso prévio indenizado, férias indenizadas com 1/3 e multa do FGTS.</td></tr>';$('tb').innerHTML=h}
+ save();
+}
+function state(){const s={};IDS.forEach(i=>s[i]=$(i).value);s.motivo=rad('motivo');s.aviso=rad('aviso');s.grau=rad('grau');s.mats=mats;return s}
+function apply(s){IDS.forEach(i=>{if(s[i]!==undefined)$(i).value=s[i]});['motivo','aviso','grau'].forEach(n=>{const e=document.querySelector(`input[name="${n}"][value="${s[n]}"]`);if(e)e.checked=true});mats=(s.mats&&s.mats.length)?s.mats:[{d:'',v:''}];renderMats();syncAviso();update()}
+function schedPdf(){clearTimeout(pdfTimer);pdfCache=null;if(!R||R.miss)return;pdfTimer=setTimeout(async()=>{try{const snap=R;const f=await gerarPdf();if(R===snap)pdfCache=f}catch(e){}},600)}
+function save(){schedPdf();try{localStorage.setItem('calc-trab',JSON.stringify(state()));const t=new Date();$('saved').textContent='Salvo automaticamente às '+t.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}catch(e){}}
+function texto(){
+ const r=R;let t=`*Simulação trabalhista*\nCliente: ${r.nome}${r.idade?' ('+r.idade+' anos)':''}\nAdmissão: ${fd(r.adm)} | Desligamento: ${fd(r.des)}\nMotivo: ${r.mLabel}\nAviso prévio: ${r.aviso}\nÚltimo salário: ${brl(r.sal)}\n`;
+ if(r.arq)t+=`Carteira de trabalho (PDF): ${r.arq}\n`;
+ t+=`\n*Verbas*\n`;r.L.forEach(l=>t+=`${l.d==='d'?'(-) ':''}${l.t}: ${brl(l.v)}\n`);
+ t+=`\nDescontos legais: - ${brl(r.desc)}\nVerbas líquidas: ${brl(r.liquido)}\n`;
+ if(r.moral)t+=`Danos morais: ${brl(r.moral)}\n`;else if(r.dmDef)t+='Danos morais: valor a definir (arbitrado pelo juiz)\n';if(r.relato)t+=`Relato do que sofreu: ${r.relato}\n`;
+ if(r.mat){t+=`Danos materiais: ${brl(r.mat)}\n`;r.matItems.forEach(m=>t+=`  - ${m.d||'Item'}: ${brl(parseFloat(m.v))}\n`)}
+ return t+`\n*Total estimado: ${brl(r.total)}*\n\nValores estimados, sujeitos à análise da advogada.`}
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),3800)}
+function needName(){if(R.miss){toast(R.miss);return true}if(!R.nome){toast('Informe seu nome na etapa 1');$('nome').focus();return true}}
+function resetForm(){IDS.forEach(i=>$(i).value='');$('dep').value=0;$('outd').value=0;$('pens').value=0;$('vt').value='0';$('venc').value='0';$('ctps').value='';arq='';apply({motivo:'sjc',aviso:'ind',grau:'0',mats:[]});$('ctpsH').textContent='Fotografe ou escaneie a página do contrato e salve em PDF. O arquivo não sai do seu aparelho; depois é só enviá-lo no WhatsApp junto com o resumo.'}
+function ensurePdf(){if(window.jspdf)return Promise.resolve(true);return new Promise(r=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js';s.onload=()=>r(!!window.jspdf);s.onerror=()=>r(false);document.head.appendChild(s)})}
+async function saveFile(data,filename){
+ let dl=null;try{dl=window.claude?await window.claude.use('downloads'):null}catch(e){}
+ if(!dl){const u=URL.createObjectURL(data instanceof Blob?data:new Blob([data]));const bx=$('dlbox');bx.classList.remove('hide');bx.innerHTML='Arquivo pronto: <a href="'+u+'" download="'+filename+'" target="_blank" rel="noopener" style="color:var(--accent);font-weight:600">toque aqui para abrir ou baixar</a>';try{const a=document.createElement('a');a.href=u;a.download=filename;document.body.appendChild(a);a.click();a.remove()}catch(e){}return toast('Arquivo gerado. Se o download não iniciar, use o link abaixo do botão.')}
+ try{await dl.save({filename,data})}catch(e){if(!e||e.code!=='declined')toast('Não foi possível salvar ('+((e&&e.code)||'erro')+'). Tente novamente.')}}
+document.addEventListener('input',e=>{const t=e.target;$('waBox').classList.add('hide');if(t.dataset&&t.dataset.i!==undefined){mats[+t.dataset.i][t.dataset.k]=t.value}update()});
+document.addEventListener('change',e=>{if(e.target.name==='motivo')syncAviso();update()});
+document.addEventListener('click',e=>{const x=e.target.dataset&&e.target.dataset.x;if(x!==undefined&&x!==''){mats.splice(+x,1);if(!mats.length)mats=[{d:'',v:''}];renderMats();update()}});
+$('addM').onclick=()=>{mats.push({d:'',v:''});renderMats();const i=document.querySelectorAll('#mats input');i[i.length-2].focus()};
+$('ctps').onchange=e=>{const f=e.target.files[0];if(!f)return;if(f.type!=='application/pdf'||f.size>15e6){e.target.value='';arq='';$('ctpsH').textContent='Escolha um arquivo PDF de até 15 MB.';return}arq=f.name;$('ctpsH').textContent='Anexado: '+f.name+'. Lembre de enviá-lo no WhatsApp.';update()};
+$('wa').onclick=async()=>{if(needName())return;
+ const MOB=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)||(navigator.maxTouchPoints>1&&/Mac/.test(navigator.platform));
+ const url='https://wa.me/'+ZAP+'?text='+encodeURIComponent(texto());lastTxt=texto();
+ let f=pdfCache;try{if(!f)f=await gerarPdf();
+  if(f&&MOB&&navigator.canShare){const file=new File([f.blob],f.name,{type:'application/pdf'});
+   if(navigator.canShare({files:[file]})){await navigator.share({files:[file],text:texto()});resetForm();toast('Enviado! O formulário foi limpo para um novo cálculo.');return}}}catch(e){if(e&&e.name==='AbortError')return}
+ if(window.top===window&&MOB){location.href=url}else{window.open(url,'_blank','noopener')}$('waBox').classList.remove('hide');if(f&&!MOB)saveFile(f.blob,f.name);resetForm()};
+$('bJson').onclick=()=>saveFile(JSON.stringify(state(),null,1),'calculo-trabalhista.json');
+$('bOpen').onclick=()=>$('fOpen').click();
+$('fOpen').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{apply(JSON.parse(await f.text()));toast('Dados carregados')}catch(x){toast('Arquivo inválido')}e.target.value=''};
+$('bNew').onclick=()=>{const bn=$('bNew');if(!bn.dataset.c){bn.dataset.c='1';bn.textContent='Confirmar: apagar tudo';toast('Toque de novo para apagar os dados e começar do zero');setTimeout(()=>{delete bn.dataset.c;bn.textContent='Novo cálculo'},4000);return}delete bn.dataset.c;bn.textContent='Novo cálculo';IDS.forEach(i=>$(i).value='');$('dep').value=0;$('outd').value=0;$('pens').value=0;$('vt').value='0';$('venc').value='0';$('ctps').value='';arq='';apply({motivo:'sjc',aviso:'ind',grau:'0',mats:[]});$('dlbox').classList.add('hide');$('waBox').classList.add('hide');$('ctpsH').textContent='Fotografe ou escaneie a página do contrato e salve em PDF. O arquivo não sai do seu aparelho; depois é só enviá-lo no WhatsApp junto com o resumo.';toast('Novo cálculo iniciado');window.scrollTo({top:0,behavior:'smooth'})};
+$('goSum').onclick=()=>$('sum').scrollIntoView({behavior:'smooth'});
+async function gerarPdf(){
+ if(!await ensurePdf()){toast('Não foi possível carregar o gerador de PDF. Verifique a internet e tente de novo.');return null}
+ const d=new window.jspdf.jsPDF({unit:'mm',format:'a4'});const W=210;let y=0;
+ const head=()=>{d.setFillColor(125,31,61);d.rect(0,0,W,30,'F');d.setTextColor(246,239,226);d.setFont('times','bold');d.setFontSize(18);d.text('VALESKA MONTEIRO',15,14);d.setTextColor(217,189,126);d.setFont('helvetica','normal');d.setFontSize(9);d.text('Advocacia e Consultoria Jurídica | OAB/ES 41.715',15,21);y=42};
+ head();d.setTextColor(42,26,32);d.setFont('times','bold');d.setFontSize(16);d.text('Simulação de verbas trabalhistas e indenizações',15,y);y+=9;
+ d.setFont('helvetica','normal');d.setFontSize(10);
+ const info=[`Cliente: ${R.nome}${R.idade?' ('+R.idade+' anos)':''}`,`Admissão: ${fd(R.adm)}   Desligamento: ${fd(R.des)}`,`Motivo: ${R.mLabel}   Aviso prévio: ${R.aviso}`,`Último salário: ${brl(R.sal)}`];
+ if(R.arq)info.push(`Carteira de trabalho (PDF): ${R.arq}`);
+ info.forEach(s=>{d.text(s,15,y);y+=6});y+=4;
+ const row=(a,b,bold,neg)=>{if(y>270){d.addPage();head()}d.setFont('helvetica',bold?'bold':'normal');d.setFontSize(10);d.setTextColor(42,26,32);d.text(a,15,y);if(neg)d.setTextColor(163,58,58);d.text(b,195,y,{align:'right'});d.setDrawColor(227,214,192);d.line(15,y+2,195,y+2);y+=7};
+ R.L.forEach(l=>row(l.t,(l.d==='d'?'- ':'')+brl(l.v),false,l.d==='d'));
+ y+=2;row('Total de descontos legais (INSS, IR e outros)','- '+brl(R.desc),true,true);row('Verbas rescisórias líquidas',brl(R.liquido),true);
+ if(R.moral)row('Indenização por danos morais',brl(R.moral),true);else if(R.dmDef)row('Indenização por danos morais','A definir pelo juiz',true);if(R.relato){d.setFont('helvetica','italic');d.setFontSize(9);d.setTextColor(122,106,110);d.splitTextToSize('Relato do cliente: '+R.relato,175).forEach(s=>{if(y>275){d.addPage();head()}d.text(s,18,y);y+=4.5});y+=2}
+ if(R.mat){row('Indenização por danos materiais',brl(R.mat),true);R.matItems.forEach(m=>row('   '+(m.d||'Item'),brl(parseFloat(m.v))))}
+ y+=4;if(y>262){d.addPage();head()}d.setFillColor(239,227,200);d.setDrawColor(168,132,63);d.rect(15,y-5,180,14,'FD');d.setFont('times','bold');d.setFontSize(14);d.setTextColor(125,31,61);d.text('TOTAL ESTIMADO',18,y+4);d.text(brl(R.total),192,y+4,{align:'right'});y+=20;
+ d.setFont('helvetica','italic');d.setFontSize(8);d.setTextColor(122,106,110);
+ d.splitTextToSize('Estimativa informativa, sem valor de cálculo judicial. O depósito de FGTS sobre a rescisão ('+brl(R.fgtsRes)+') vai para a conta vinculada e não integra o total. Horas extras, comissões e adicionais não foram considerados. A análise final é feita pela advogada.',180).forEach(s=>{d.text(s,15,y);y+=4});
+ d.setFont('helvetica','normal');d.text('Valeska Monteiro OAB/ES 41.715 | Cel: (27) 99752-5314 | contato@valeskamonteiro.adv.br',105,288,{align:'center'});
+ return{blob:d.output('blob'),name:'simulacao-trabalhista-'+R.nome.split(' ')[0].toLowerCase().replace(/[^a-z0-9]/g,'')+'.pdf'}
+};
+$('cpy').onclick=async()=>{const t=lastTxt;if(!t)return toast('Nada para copiar.');try{await navigator.clipboard.writeText(t);toast('Mensagem copiada')}catch(e){const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy');toast('Mensagem copiada')}catch(x){toast('Não foi possível copiar')}a.remove()}};
+$('pdf').onclick=async()=>{if(needName())return;const f=await gerarPdf();if(f)saveFile(f.blob,f.name)};
+try{const s=localStorage.getItem('calc-trab');if(s)apply(JSON.parse(s));else{renderMats();syncAviso();update()}}catch(e){renderMats();syncAviso();update()}
+</script>
+</body>
+</html>
